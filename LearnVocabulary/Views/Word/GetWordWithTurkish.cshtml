@@ -1,0 +1,29 @@
+﻿@model List<UnknownWord>
+
+<h2>Words List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>English Text</th>
+            <th>Turkish Text</th>
+            <th>Level</th>
+            <th>Word Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var word in Model)
+        {
+            <tr>
+                <td>@word.EnglistText</td>
+                <td>@word.TurkishText</td>
+                <td>@word.Level</td>
+                <td>@word.WordDate</td>
+                <td>
+                    <a asp-action="GetWordSentences" asp-route-id="@word.Id" asp class="btn btn-primary">Show Sentences</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

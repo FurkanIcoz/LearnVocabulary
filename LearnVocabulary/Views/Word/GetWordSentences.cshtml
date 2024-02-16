@@ -1,0 +1,10 @@
+﻿@model List<WordsSentence>
+
+<h2>Sentences for the Word</h2>
+
+@foreach (var sentence in Model)
+{
+    <p>@sentence.Sentence</p>
+}
+
+<a asp-action="GetWordWithTurkish" class="btn btn-primary">Back to Words</a>

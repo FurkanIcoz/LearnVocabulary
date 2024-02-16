@@ -1,0 +1,7 @@
+﻿@using LearnVocabulary.Models.RequestFolder;
+@model WordNameReq
+
+<form asp-action="Create" asp-controller="Word" method="post">
+    <input type="text" asp-for="Text"/>
+    <input type="submit" value="Add"/>
+</form>

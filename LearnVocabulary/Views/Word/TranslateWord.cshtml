@@ -1,0 +1,8 @@
+﻿@model UnknownWord
+
+<p>@Model.EnglistText</p> Translate: 
+<form method="post" asp-action="TranslateWord" asp-controller="Word">
+    <input type="hidden" asp-for="Id" />
+    <input type="text" asp-for="TurkishText" placeholder="Translate Word" value="" />
+    <input type="submit" value="Translate" />
+</form>

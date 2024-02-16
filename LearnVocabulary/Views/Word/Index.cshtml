@@ -1,0 +1,34 @@
+﻿@model List<LearnVocabulary.Models.Word>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Word
+            </th>
+            <th>
+                Audio
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.WordText
+                </td>
+                <td>
+                    <audio controls>
+                        <source src="@item.Phonetics.FirstOrDefault()?.Audio">
+                        
+                        </audio>
+                </td>
+                <td>
+                    <a asp-action="GetWordsDetails" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

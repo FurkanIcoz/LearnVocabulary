@@ -1,0 +1,23 @@
+﻿@model LearnVocabulary.Models.Word
+
+<h2>@Model.WordText</h2>
+
+
+@foreach (var meaning in Model.Meanings)
+{
+    <h3>Meanings:</h3>
+
+    <p>
+        @meaning.PartOfSpeech
+    </p>
+    <h4>Definitions:</h4>
+    <ul>
+        @foreach (var definition in meaning.Definitions)
+        {
+            <li>@definition.Definition</li>
+            <p><b>Example:</b> @definition.Example</p>
+        }
+    </ul>
+}
+
+<a asp-action="Index">Back to List</a>

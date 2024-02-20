@@ -2,6 +2,8 @@
 
 <h2>Words List</h2>
 
+<button onclick="sortTableNumeric(2)" asp class="btn btn-primary">Sırala (Level)</button>
+
 <table class="table">
     <thead>
         <tr>
@@ -13,6 +15,7 @@
         </tr>
     </thead>
     <tbody>
+        
         @foreach (var word in Model)
         {
             <tr>
@@ -27,3 +30,33 @@
         }
     </tbody>
 </table>
+<script>
+
+    function sortTableNumeric(columnIndex) {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.querySelector(".table");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+
+            for (i = 1; i < rows.length - 1; i++) {
+                shouldSwitch = false;
+
+                x = parseInt(rows[i].cells[columnIndex].innerText);
+                y = parseInt(rows[i + 1].cells[columnIndex].innerText);
+
+                if (x < y) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+</script>

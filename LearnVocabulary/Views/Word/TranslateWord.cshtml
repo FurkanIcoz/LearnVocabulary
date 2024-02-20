@@ -11,3 +11,23 @@
         <input type="submit" value="Translate" />
     }
 </form>
+
+<button style="margin-top:10px;" id="translateIt">See Turkish</button>
+<p id="translatedText"></p>
+<script>
+
+    var isTextVisible = false; 
+
+    document.getElementById("translateIt").addEventListener("click", function () {
+        var outputTextElement = document.getElementById("translatedText");
+
+        if (isTextVisible) {
+            outputTextElement.innerHTML = "";
+
+        } else {
+            outputTextElement.innerHTML = "@Model.TurkishText";
+        }
+
+        isTextVisible = !isTextVisible;
+    });
+</script>

@@ -6,6 +6,6 @@ Write a Sentence About <p>@Model.UnknownWordforSentence</p>
 <form asp-action="AddSentence" asp-controller="Word" method="post">
     <input  type="hidden" asp-for="UnknownWordId"/>
     <input  type="hidden" asp-for="UnknownWordforSentence"/>
-    <input type="text" asp-for="Sentence" placeholder="Sentence"/>
+    <input type="text" asp-for="Sentence" placeholder="Sentence" autocomplete="off"/>
     <input type="submit" value="Add Sentence"/>
 </form>

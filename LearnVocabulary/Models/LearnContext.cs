@@ -7,7 +7,7 @@ namespace LearnVocabulary.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-3GFPOJ9\\SQLEXPRESS;initial Catalog=LearnVocabularyDb; integrated Security=true; TrustServerCertificate=true;");
+            optionsBuilder.UseSqlServer("Server=DESKTOP-VRP5AV1\\SQLEXPRESS;initial Catalog=LearnVocabularyDb; integrated Security=true; TrustServerCertificate=true;");
         }
 
         public DbSet<Word> Words { get; set; }

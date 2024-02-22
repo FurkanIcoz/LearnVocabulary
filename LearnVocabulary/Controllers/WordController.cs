@@ -19,15 +19,12 @@ namespace LearnVocabulary.Controllers
     public class WordController : Controller
     {
         private readonly LearnContext context;
-        //private readonly IHttpClientFactory httpClientFactory;
         private readonly HttpClient httpClient;
         public WordController(LearnContext context, IHttpClientFactory httpClientFactory)
         {
             this.context = context;
             httpClient = httpClientFactory.CreateClient();
-            //this.httpClientFactory = httpClientFactory.CreateClient();
         }
-
 
         public async Task<IActionResult> Index()
         {
@@ -63,10 +60,25 @@ namespace LearnVocabulary.Controllers
 
         public async Task<IActionResult> GetWordWithTurkish()
         {
-            List<UnknownWord> words = await context.UnknownWords
+            List<UnknownWord> originalList = await context.UnknownWords
                            .Include(w => w.WordsSentences)
                            .ToListAsync();
-            return View(words);
+
+            List<UnknownWord> sortedByLevelAscending = originalList.OrderBy(w => w.Level).ToList();
+            List<UnknownWord> sortedByLevelDescending = originalList.OrderByDescending(w => w.Level).ToList();
+            List<UnknownWord> sortedByDateAscending = originalList.OrderBy(w => w.WordDate).ToList();
+            List<UnknownWord> sortedByDateDescending = originalList.OrderByDescending(w => w.WordDate).ToList();
+
+            WordWithTurkishSorted viewModel = new WordWithTurkishSorted
+            {
+                OriginalList = originalList,
+                SortedByLevelAscending = sortedByLevelAscending,
+                SortedByLevelDescending = sortedByLevelDescending,
+                SortedByDateAscending = sortedByDateAscending,
+                SortedByDateDescending = sortedByDateDescending
+            };
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> GetWordSentences(int? id)
@@ -196,178 +208,11 @@ namespace LearnVocabulary.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-
-
-        //[HttpPost]
-        //public async Task<IActionResult> Create(WordNameReq wordNameReq)
-        //{
-        //    Stopwatch stopwatch = new Stopwatch();
-        //    stopwatch.Start();
-        //    bool isWordAny = await context.Words.AnyAsync(w => w.WordText == wordNameReq.Text);
-        //    if (wordNameReq.Text.IsNullOrEmpty())
-        //    {
-        //        return BadRequest("Kelime Bos Olamaz");
-        //    }
-        //    else if (isWordAny)
-        //    {
-        //        return BadRequest("Kelime Zaten Var");
-        //    }
-        //    else
-        //    {
-        //        //var httpClient = httpClientFactory.CreateClient();
-        //        var apiUrl = $"https://api.dictionaryapi.dev/api/v2/entries/en/{wordNameReq.Text}";
-
-        //        try
-        //        {
-
-        //            var responsebody = await httpClient.GetAsync(apiUrl);
-        //            if (responsebody.IsSuccessStatusCode)
-        //            {
-        //                var response = await responsebody.Content.ReadAsStringAsync();
-        //                var jsonArray = JArray.Parse(response);
-
-
-        //                var firstElement = jsonArray.First;
-        //                //response = response.Substring(1);
-        //                //response = response.Substring(0, response.Length - 1);
-
-        //                var apiUrlTrans = $"https://api.mymemory.translated.net/get?q={wordNameReq.Text}!&langpair=en|tr";
-        //                var responseTrans = await httpClient.GetStringAsync(apiUrlTrans);
-
-        //                var jsonArrayTrans = JObject.Parse(responseTrans);
-        //                var translatedText = jsonArrayTrans["responseData"]?["translatedText"].ToString();
-        //                if (translatedText != null && !string.IsNullOrWhiteSpace(translatedText.ToString()) && translatedText.ToString() != ".")
-        //                {
-        //                    translatedText = translatedText.ToString();
-        //                }
-        //                else
-        //                {
-        //                    var matches = jsonArrayTrans["matches"];
-        //                    if (matches != null && matches.Any())
-        //                    {
-        //                        var firstMatch = matches.First;
-        //                        var translationFromMatches = firstMatch["translation"]?.ToString();
-        //                        if (string.IsNullOrEmpty(translationFromMatches) || translationFromMatches == ".")
-        //                        {
-        //                            firstMatch = matches.First.Next;
-        //                            translationFromMatches = firstMatch["translation"]?.ToString();
-        //                            if (!string.IsNullOrEmpty(translationFromMatches) || translationFromMatches != ".")
-        //                            {
-        //                                translatedText = translationFromMatches;
-        //                            }
-        //                            translatedText = translationFromMatches;
-        //                        }
-        //                        else
-        //                        {
-        //                            translatedText = "Not Found";
-
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        translatedText = "Not Found";
-        //                    }
-        //                }
-        //                translatedText = new string(translatedText
-        //                .Where(c => c != '!' || c != '-' || c != '.' || c != ',')
-        //                .ToArray());
-        //                var wordFromApi = JsonConvert.DeserializeObject<Word>(firstElement.ToString());
-
-        //                UnknownWord unknownWord = new UnknownWord();
-        //                unknownWord.EnglistText = wordNameReq.Text;
-        //                unknownWord.Level = 1;
-        //                unknownWord.WordDate = DateTime.Now;
-        //                unknownWord.TurkishText = translatedText.ToLower();
-        //                context.UnknownWords.Add(unknownWord);
-
-        //                if (wordFromApi.Phonetic.IsNullOrEmpty())
-        //                {
-        //                    wordFromApi.Phonetic = " ";
-        //                }
-
-        //                wordFromApi.WordText = wordNameReq.Text;
-        //                await context.LicanseInfos.AddAsync(wordFromApi.License);
-        //                if (isWordAny)
-        //                {
-        //                    return BadRequest("Kelime Zaten Var");
-        //                }
-        //                await context.Words.AddAsync(wordFromApi);
-
-        //                var meanings = wordFromApi.Meanings;
-
-        //                foreach (var meaning in meanings)
-        //                {
-        //                    await context.Meanings.AddAsync(meaning);
-
-        //                    foreach (var definition in meaning.Definitions)
-        //                    {
-        //                        await context.Definitions.AddAsync(definition);
-
-        //                    }
-
-        //                }
-
-
-        //                foreach (var phonetic in wordFromApi.Phonetics)
-        //                {
-        //                    if (phonetic.Text.IsNullOrEmpty())
-        //                    {
-        //                        phonetic.Text = " ";
-        //                        await context.Phonetics.AddAsync(phonetic);
-        //                    }
-        //                    else
-        //                    {
-        //                        await context.Phonetics.AddAsync(phonetic);
-        //                    }
-        //                }
-
-
-        //                await context.SaveChangesAsync();
-        //                stopwatch.Stop();
-        //                Debug.Print(stopwatch.Elapsed.ToString());
-        //                return View();
-        //            }
-        //            else if (responsebody.StatusCode == System.Net.HttpStatusCode.NotFound)
-        //            {
-        //                return BadRequest("Kelime Bulunamadi Hata: " + responsebody.StatusCode);
-        //            }
-        //            else
-        //            {
-        //                return BadRequest("Hata Olustu Hata: " + responsebody.StatusCode);
-        //            }
-
-
-        //        }
-        //        catch (HttpRequestException ex)
-        //        {
-
-        //            return BadRequest("HTTP istegi sirasinda hata olustu: " + ex.Message);
-        //        }
-
-
-        //    }
-        //}
 
         [HttpPost]
         public async Task<IActionResult> Create(WordNameReq wordNameReq)

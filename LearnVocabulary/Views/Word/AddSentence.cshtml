@@ -1,11 +1,20 @@
 ﻿@using LearnVocabulary.ViewModels;
 @model SentenceViewModel
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-Write a Sentence About <p>@Model.UnknownWordforSentence</p>
+Write a Sentence About <b>@Model.UnknownWordforSentence.ToUpper()</b>
 
-<form asp-action="AddSentence" asp-controller="Word" method="post">
-    <input  type="hidden" asp-for="UnknownWordId"/>
-    <input  type="hidden" asp-for="UnknownWordforSentence"/>
-    <input type="text" asp-for="Sentence" placeholder="Sentence" autocomplete="off"/>
-    <input type="submit" value="Add Sentence"/>
-</form>
+<div class="container mt-3">
+
+
+    <form asp-action="AddSentence" asp-controller="Word" method="post">
+
+        <div class="input-group">
+            <input type="hidden" asp-for="UnknownWordId" />
+            <input type="hidden" asp-for="UnknownWordforSentence" />
+            <input type="text" asp-for="Sentence" placeholder="Sentence" autocomplete="off" class="form-control" />
+            <div class="input-group-append"></div>
+            <input type="submit" value="Add Sentence" class="btn btn-outline-secondary mb-3" />
+        </div>
+    </form>
+</div>

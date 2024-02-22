@@ -1,62 +1,101 @@
-﻿@model List<UnknownWord>
+﻿@using LearnVocabulary.ViewModels
+@model WordWithTurkishSorted
 
-<h2>Words List</h2>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-<button onclick="sortTableNumeric(2)" asp class="btn btn-primary">Sırala (Level)</button>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>English Text</th>
-            <th>Turkish Text</th>
-            <th>Level</th>
-            <th>Word Date</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        
-        @foreach (var word in Model)
-        {
+<style>
+
+    .sortableTable {
+        margin-top: 20px;
+        display: none;
+    }
+    .btn-secondary{
+        margin-right:10px;
+        margin-bottom:10px;
+    }
+</style>
+
+<h2 class="font-wight-bold">Words List</h2>
+
+<div class="btn-group" role="group" aria-label="Sort Buttons">
+    @foreach (var list in new List<List<UnknownWord>>
+    {
+    Model.SortedByLevelAscending,
+    Model.SortedByLevelDescending,
+    Model.SortedByDateAscending,
+    Model.SortedByDateDescending
+    })
+    {
+        <button class="btn btn-secondary" onclick="showList('@list.GetHashCode()')">Show @GetListName(list)</button>
+    }
+</div>
+
+@foreach (var list in new List<List<UnknownWord>>
+{
+    Model.SortedByLevelAscending,
+    Model.SortedByLevelDescending,
+    Model.SortedByDateAscending,
+    Model.SortedByDateDescending
+})
+{
+    <table class="table table-bordered table-striped sortedTable" id="@list.GetHashCode()">
+        <thead class="thead-dark">
             <tr>
-                <td>@word.EnglistText</td>
-                <td>@word.TurkishText</td>
-                <td>@word.Level</td>
-                <td>@word.WordDate</td>
-                <td>
-                    <a asp-action="GetWordSentences" asp-route-id="@word.Id" asp class="btn btn-primary">Show Sentences</a>
-                </td>
+                <th>English Text</th>
+                <th>Turkish Text</th>
+                <th>Level</th>
+                <th>Word Date</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var word in list)
+            {
+                <tr>
+                    <td>@word.EnglistText</td>
+                    <td>@word.TurkishText</td>
+                    <td>@word.Level</td>
+                    <td>@word.WordDate</td>
+                    <td>
+                        <a asp-action="GetWordSentences" asp-route-id="@word.Id" asp class="btn btn-primary">Show Sentences</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
 <script>
-
-    function sortTableNumeric(columnIndex) {
-        var table, rows, switching, i, x, y, shouldSwitch;
-        table = document.querySelector(".table");
-        switching = true;
-
-        while (switching) {
-            switching = false;
-            rows = table.rows;
-
-            for (i = 1; i < rows.length - 1; i++) {
-                shouldSwitch = false;
-
-                x = parseInt(rows[i].cells[columnIndex].innerText);
-                y = parseInt(rows[i + 1].cells[columnIndex].innerText);
-
-                if (x < y) {
-                    shouldSwitch = true;
-                    break;
-                }
-            }
-
-            if (shouldSwitch) {
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-            }
-        }
+    function showList(listId) {
+        $('table').hide();
+        $('#' + listId).toggle();
     }
 </script>
+
+@functions {
+    string GetListName(List<UnknownWord> list)
+    {
+        if (list == Model.SortedByLevelAscending)
+        {
+            return "Sorted By Level (Ascending)";
+        }
+        else if (list == Model.SortedByLevelDescending)
+        {
+            return "Sorted By Level (Descending)";
+        }
+        else if (list == Model.SortedByDateAscending)
+        {
+            return "Sorted By Date (Ascending)";
+        }
+        else if (list == Model.SortedByDateDescending)
+        {
+            return "Sorted By Date (Descending)";
+        }
+        else
+        {
+            return "Unknown List";
+        }
+    }
+}

@@ -1,0 +1,26 @@
+﻿@model List<UnknownWord>
+
+
+<table class="table table-bordered table-striped sortedTable">
+    <thead class="thead-dark">
+        <tr>
+            <th>English Text</th>
+            <th>Turkish Text</th>
+            <th>Level</th>
+            <th>Views</th>
+            <th>Has Learned</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var word in Model)
+        {
+            <tr>
+                <td>@word.EnglistText</td>
+                <td>@word.TurkishText</td>
+                <td>@word.Level</td>
+                <td>@word.NumberOfViews</td>
+                <td>@word.HasLearned</td>
+            </tr>
+        }
+    </tbody>
+</table>

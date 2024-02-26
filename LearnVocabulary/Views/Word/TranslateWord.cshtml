@@ -1,20 +1,34 @@
 ﻿@model UnknownWord
 
-<p>@Model.EnglistText</p>  
-<form method="post" asp-action="TranslateWord" asp-controller="Word">
+<div container mt-3>
+    <p>@Model.EnglistText</p>
 
-    <p>Translate:</p>
-    @if (!(Model.EnglistText == "Please Add Word First"))
-    {
-        <input type="hidden" asp-for="Id" />
-        <input type="text" asp-for="TurkishText" placeholder="Translate Word" value="" autocomplete="off"/>
-        <input type="submit" value="Translate" />
-    }
-</form>
+    <form method="post" asp-action="TranslateWord" asp-controller="Word">
 
-<button style="margin-top:10px;" id="translateIt">See Turkish</button>
-<p id="translatedText"></p>
+        <p>Translate:</p>
+        @if (!(Model.EnglistText == "Please Add Word First"))
+        {
+            <div class="input-group">
+
+                <input type="hidden" asp-for="Id" />
+                <input type="text" asp-for="TurkishText" placeholder="Translate Word" value="" class="form-control" autocomplete="off" id="turkishTextInput" />
+                <input type="submit" value="Translate" class="btn btn-outline-secondary mb-3" />
+            </div>
+        }
+    </form>
+
+
+    <button style="margin-top:10px;" id="translateIt">See Turkish</button>
+    <p id="translatedText"></p>
+
+
+</div>
 <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var turkishTextInput = document.getElementById("turkishTextInput");
+        turkishTextInput.focus();
+    });
 
     var isTextVisible = false; 
 

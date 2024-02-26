@@ -12,6 +12,8 @@ namespace LearnVocabulary.Models
         public string TurkishText { get; set; }
         public int Level { get; set; }
         public List<WordsSentence> WordsSentences { get; set; }
+        public int NumberOfViews { get; set; }
         public DateTime WordDate { get; set; }
+        public bool HasLearned { get; set; } = false;
     }
 }

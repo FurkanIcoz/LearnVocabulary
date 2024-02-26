@@ -10,9 +10,10 @@
         margin-top: 20px;
         display: none;
     }
-    .btn-secondary{
-        margin-right:10px;
-        margin-bottom:10px;
+
+    .btn-secondary {
+        margin-right: 10px;
+        margin-bottom: 10px;
     }
 </style>
 
@@ -24,7 +25,9 @@
     Model.SortedByLevelAscending,
     Model.SortedByLevelDescending,
     Model.SortedByDateAscending,
-    Model.SortedByDateDescending
+    Model.SortedByDateDescending,
+    Model.SortedByViewsAscending,
+    Model.SortedByViewsDescending
     })
     {
         <button class="btn btn-secondary" onclick="showList('@list.GetHashCode()')">Show @GetListName(list)</button>
@@ -36,7 +39,9 @@
     Model.SortedByLevelAscending,
     Model.SortedByLevelDescending,
     Model.SortedByDateAscending,
-    Model.SortedByDateDescending
+    Model.SortedByDateDescending,
+    Model.SortedByViewsAscending,
+    Model.SortedByViewsDescending
 })
 {
     <table class="table table-bordered table-striped sortedTable" id="@list.GetHashCode()">
@@ -45,6 +50,7 @@
                 <th>English Text</th>
                 <th>Turkish Text</th>
                 <th>Level</th>
+                <th>Views</th>
                 <th>Word Date</th>
                 <th>Actions</th>
             </tr>
@@ -54,8 +60,9 @@
             {
                 <tr>
                     <td>@word.EnglistText</td>
-                    <td>@word.TurkishText</td>
+                    <td>@word.TurkishText <a asp-action="UpdateWord" asp-route-id="@word.Id" asp-class="btn btn-primary">Update Word</a> </td>
                     <td>@word.Level</td>
+                    <td>@word.NumberOfViews</td>
                     <td>@word.WordDate</td>
                     <td>
                         <a asp-action="GetWordSentences" asp-route-id="@word.Id" asp class="btn btn-primary">Show Sentences</a>
@@ -92,6 +99,14 @@
         else if (list == Model.SortedByDateDescending)
         {
             return "Sorted By Date (Descending)";
+        }
+        else if (list == Model.SortedByViewsAscending)
+        {
+            return "Sorted By Views (Ascending)";
+        }
+        else if (list == Model.SortedByViewsDescending)
+        {
+            return "Sorted By Views (Descending)";
         }
         else
         {

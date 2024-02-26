@@ -2,9 +2,11 @@
 @model SentenceViewModel
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
+<div class="container mt-3">
+
 Write a Sentence About <b>@Model.UnknownWordforSentence.ToUpper()</b>
 
-<div class="container mt-3">
+
 
 
     <form asp-action="AddSentence" asp-controller="Word" method="post">

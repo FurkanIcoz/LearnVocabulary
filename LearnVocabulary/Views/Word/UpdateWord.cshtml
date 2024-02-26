@@ -1,0 +1,10 @@
+﻿@model UnknownWord
+<form asp-action="UpdateWord" asp-controller="Word" method="post">
+    <h2>@Model.EnglistText: </h2>
+    <div class="input-group">
+        <input type="hidden" asp-for="Id"/>
+        <input type="text" asp-for="TurkishText" autocomplete="off" class="form-control" />
+        <input type="submit" value="Update" class="btn btn-outline-primary mb-3" />
+
+    </div>
+</form>

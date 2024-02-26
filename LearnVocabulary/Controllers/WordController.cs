@@ -68,6 +68,8 @@ namespace LearnVocabulary.Controllers
             List<UnknownWord> sortedByLevelDescending = originalList.OrderByDescending(w => w.Level).ToList();
             List<UnknownWord> sortedByDateAscending = originalList.OrderBy(w => w.WordDate).ToList();
             List<UnknownWord> sortedByDateDescending = originalList.OrderByDescending(w => w.WordDate).ToList();
+            List<UnknownWord> sortedByViewsAscending = originalList.OrderBy(w => w.NumberOfViews).ToList();
+            List<UnknownWord> sortedByViewsDescending = originalList.OrderByDescending(w => w.NumberOfViews).ToList();
 
             WordWithTurkishSorted viewModel = new WordWithTurkishSorted
             {
@@ -75,7 +77,9 @@ namespace LearnVocabulary.Controllers
                 SortedByLevelAscending = sortedByLevelAscending,
                 SortedByLevelDescending = sortedByLevelDescending,
                 SortedByDateAscending = sortedByDateAscending,
-                SortedByDateDescending = sortedByDateDescending
+                SortedByDateDescending = sortedByDateDescending,
+                SortedByViewsAscending = sortedByViewsAscending,
+                SortedByViewsDescending = sortedByViewsDescending,
             };
 
             return View(viewModel);
@@ -96,13 +100,57 @@ namespace LearnVocabulary.Controllers
 
         }
 
+        public async Task<IActionResult> GetWordsToLearn()
+        {
+            var unknownWords = await context.UnknownWords.Where(w => w.HasLearned==false && w.Level==1)
+                .OrderBy(word => Guid.NewGuid())
+                .Take(17)
+                .ToListAsync();
 
+            foreach (var word in unknownWords)
+            {
+                word.HasLearned = true;
+                context.UnknownWords.Update(word);
+            }
+            await context.SaveChangesAsync();
+
+
+            return View(unknownWords);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateWord(int? id)
+        {
+            var word = await context.UnknownWords.FindAsync(id);
+            if(word == null)
+            {
+                return NotFound();
+            }
+            return View(word);
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateWord(UnknownWord word)
+        {
+            var newWord = await context.UnknownWords.FindAsync(word.Id);
+
+            newWord.TurkishText = word.TurkishText;
+
+            context.UnknownWords.Update(newWord);
+            await context.SaveChangesAsync();
+            return RedirectToAction("GetWordWithTurkish");
+
+        }
 
 
 
         [HttpGet]
         public async Task<IActionResult> TranslateWord()
         {
+
+            var translateWords = await context.UnknownWords.Where(w => w.Level > 1).OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
+
             var word = await context.UnknownWords.OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
 
             if (word == null)
@@ -115,7 +163,9 @@ namespace LearnVocabulary.Controllers
                 };
                 return View(nullWord);
             }
-
+            word.NumberOfViews += 1;
+            context.UnknownWords.Update(word);
+            await context.SaveChangesAsync();
             return View(word);
         }
 
@@ -145,6 +195,7 @@ namespace LearnVocabulary.Controllers
             {
                 if (word.Level < 100)
                 {
+                    
                     word.Level += 1;
                 }
                 if (word.Level == 100)

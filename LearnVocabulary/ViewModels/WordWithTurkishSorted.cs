@@ -9,5 +9,7 @@ namespace LearnVocabulary.ViewModels
         public List<UnknownWord> SortedByLevelDescending { get; set; }
         public List<UnknownWord> SortedByDateAscending { get; set; }
         public List<UnknownWord> SortedByDateDescending { get; set; }
+        public List<UnknownWord> SortedByViewsDescending { get; set; }
+        public List<UnknownWord> SortedByViewsAscending { get; set; }
     }
 }

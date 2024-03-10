@@ -1,4 +1,4 @@
-﻿@model List<UnknownWord>
+﻿@* @model List<UnknownWord>
 
 
 <table class="table table-bordered table-striped sortedTable">
@@ -23,4 +23,6 @@
             </tr>
         }
     </tbody>
-</table>
+</table> *@
+
+<a href="@Url.Action("GetWordsToLearn")">Download Excel Table</a>

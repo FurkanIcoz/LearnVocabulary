@@ -13,6 +13,8 @@ using IronPython.Hosting;
 using System.Net;
 using System.Security.Cryptography.Xml;
 using LearnVocabulary.ViewModels;
+using OfficeOpenXml;
+using NPOI.XSSF.UserModel;
 
 namespace LearnVocabulary.Controllers
 {
@@ -99,13 +101,14 @@ namespace LearnVocabulary.Controllers
             return View(word.WordsSentences);
 
         }
-
+        
         public async Task<IActionResult> GetWordsToLearn()
         {
-            var unknownWords = await context.UnknownWords.Where(w => w.HasLearned==false && w.Level==1)
-                .OrderBy(word => Guid.NewGuid())
-                .Take(17)
-                .ToListAsync();
+            var unknownWords = await context.UnknownWords.Where(w => w.HasLearned == false && w.Level == 1)
+               .OrderBy(word => Guid.NewGuid())
+               .Take(30)
+               .ToListAsync();
+
 
             foreach (var word in unknownWords)
             {
@@ -114,16 +117,45 @@ namespace LearnVocabulary.Controllers
             }
             await context.SaveChangesAsync();
 
+            var workbook = new XSSFWorkbook();
+            var sheet = workbook.CreateSheet("Sheet1");
 
-            return View(unknownWords);
+            var headerRow = sheet.CreateRow(0);
+            headerRow.CreateCell(0).SetCellValue("English");
+            headerRow.CreateCell(1).SetCellValue("Turkish");
+            headerRow.CreateCell(2).SetCellValue("Level");
+            headerRow.CreateCell(3).SetCellValue("Views");
+            headerRow.CreateCell(4).SetCellValue("Had Learn");
+
+            for (int i = 0; i < unknownWords.Count; i++)
+            {
+                var row = sheet.CreateRow(i + 1);
+                row.CreateCell(0).SetCellValue(unknownWords[i].EnglistText);
+                row.CreateCell(1).SetCellValue(unknownWords[i].TurkishText);
+                row.CreateCell(2).SetCellValue(unknownWords[i].Level);
+                row.CreateCell(3).SetCellValue(unknownWords[i].NumberOfViews);
+                row.CreateCell(4).SetCellValue(unknownWords[i].HasLearned);
+
+                sheet.AutoSizeColumn(0);
+                sheet.AutoSizeColumn(1);
+
+                
+            }
+
+            using(var memoryStream = new MemoryStream())
+            {
+                workbook.Write(memoryStream);
+                return File(memoryStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "LearnWords.xlsx");
+            }
+
+            
         }
-
 
         [HttpGet]
         public async Task<IActionResult> UpdateWord(int? id)
         {
             var word = await context.UnknownWords.FindAsync(id);
-            if(word == null)
+            if (word == null)
             {
                 return NotFound();
             }
@@ -149,7 +181,9 @@ namespace LearnVocabulary.Controllers
         public async Task<IActionResult> TranslateWord()
         {
 
-            var translateWords = await context.UnknownWords.Where(w => w.Level > 1).OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
+            //var translateWords = await context.UnknownWords.Where(w => w.Level > 1 || w.HasLearned == true).OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
+            var translateWords = await context.UnknownWords.Where(w => w.HasLearned ==true).OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
+
 
             var word = await context.UnknownWords.OrderBy(x => Guid.NewGuid()).FirstOrDefaultAsync();
 
@@ -163,10 +197,10 @@ namespace LearnVocabulary.Controllers
                 };
                 return View(nullWord);
             }
-            word.NumberOfViews += 1;
-            context.UnknownWords.Update(word);
+            translateWords.NumberOfViews += 1;
+            context.UnknownWords.Update(translateWords);
             await context.SaveChangesAsync();
-            return View(word);
+            return View(translateWords);
         }
 
         [HttpPost]
